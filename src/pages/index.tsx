@@ -14,9 +14,12 @@ const CreatePostWizard = () => {
 
   const [content, setContent] = useState("");
 
+  const ctx = api.useContext();
+
   const { mutate } = api.posts.create.useMutation({
     onSuccess: () => {
       setContent("");
+      void ctx.posts.invalidate();
     }
   });
 
