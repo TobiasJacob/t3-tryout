@@ -2,7 +2,7 @@ import { SignInButton, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import { RouterOutputs, api } from "~/utils/api";
+import { type RouterOutputs, api } from "~/utils/api";
 
 import dayjs from "dayjs";
 import Image from "next/image";
@@ -14,7 +14,11 @@ const CreatePostWizard = () => {
 
   const [content, setContent] = useState("");
 
-  const { mutate } = api.posts.create.useMutation();
+  const { mutate } = api.posts.create.useMutation({
+    onSuccess: () => {
+      setContent("");
+    }
+  });
 
   if (!user) return null;
 
@@ -23,7 +27,6 @@ const CreatePostWizard = () => {
     <input placeholder="Type some emojis!" className="bg-transparent grow outline-none" value={content} onChange={(e) => setContent(e.target.value)} />
     <button className="bg-slate-400 text-white rounded-md px-4 py-2" onClick={() => {
       mutate({ content });
-      setContent("");
     }}>Post</button>
   </div>
 };
@@ -34,7 +37,7 @@ const PostView = (props: { fullPost: PostWithUser }) => {
 
   return (
     <div key={post.id} className="flex border-b border-slate-400 p-8 outline-none gap-3">
-      <Image src={author.profileImageUrl} className="h-14 w-14 rounded-full" alt={`${author.userName}'s profile picture`} width={56} height={56} />
+      <Image src={author.profileImageUrl} className="h-14 w-14 rounded-full" alt={`${author.userName ?? "unknown"}'s profile picture`} width={56} height={56} />
       <div className="flex flex-col">
         <div className="flex gap-1">
           <span className="font-bold">{author.eMail}</span><span>·</span><span>{dayjs(post.createdAt).fromNow()}</span>
