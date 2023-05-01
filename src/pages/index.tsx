@@ -7,15 +7,24 @@ import { RouterOutputs, api } from "~/utils/api";
 import dayjs from "dayjs";
 import Image from "next/image";
 import { LoadingSpinner } from "~/components/loading";
+import { useState } from "react";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
+
+  const [content, setContent] = useState("");
+
+  const { mutate } = api.posts.create.useMutation();
 
   if (!user) return null;
 
   return <div className="flex gap-3 w-full">
     <Image src={user.profileImageUrl} alt="Profile Image" className="w-14 h-14 rounded-full" width={56} height={56} />
-    <input placeholder="Type some emojis!" className="bg-transparent grow outline-none" />
+    <input placeholder="Type some emojis!" className="bg-transparent grow outline-none" value={content} onChange={(e) => setContent(e.target.value)} />
+    <button className="bg-slate-400 text-white rounded-md px-4 py-2" onClick={() => {
+      mutate({ content });
+      setContent("");
+    }}>Post</button>
   </div>
 };
 
@@ -39,8 +48,6 @@ const Home: NextPage = () => {
   const user = useUser();
 
   const { data, isLoading } = api.posts.getAll.useQuery();
-
-  console.log(user?.user?.id);
 
   if (isLoading) return <LoadingSpinner />;
 
