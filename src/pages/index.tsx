@@ -6,6 +6,7 @@ import { RouterOutputs, api } from "~/utils/api";
 
 import dayjs from "dayjs";
 import Image from "next/image";
+import { LoadingSpinner } from "~/components/loading";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -41,7 +42,7 @@ const Home: NextPage = () => {
 
   console.log(user?.user?.id);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <LoadingSpinner />;
 
   if (!data) return <div>Something went wrong</div>;
 
